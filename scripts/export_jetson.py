@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Author: Vidhyasree M
 """
 Jetson Performance Export Script
 

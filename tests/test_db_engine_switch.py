@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Test suite for dynamic database engine switching between SQL engines (SQLite and PostgreSQL).
 """

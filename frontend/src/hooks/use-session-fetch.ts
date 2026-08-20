@@ -1,3 +1,4 @@
+// Author: Vidhyasree M
 import { useState, useEffect, useCallback, useRef } from 'react';
 
 const isBrowser = typeof window !== 'undefined';

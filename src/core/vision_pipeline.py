@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Full vision pipeline — wraps Stage 1-5 for use by server.py and other callers.
 

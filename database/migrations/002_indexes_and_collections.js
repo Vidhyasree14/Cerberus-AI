@@ -1,3 +1,4 @@
+// Author: Vidhyasree M
 /**
  * Migration 002: Indexes and Collections setup for MongoDB / Mongo Atlas.
  * 

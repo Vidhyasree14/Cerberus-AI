@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 [Unit]
 Description=EdgeVision Industrial PPE Compliance & Safety Platform Daemon
 After=network.target mongodb.service

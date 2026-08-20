@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 EdgeVision adaptive runtime — device-aware inference sizing + executor isolation.
 

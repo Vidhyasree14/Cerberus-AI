@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 MQTT violation publisher with temporal-validation integration.
 

@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 EdgeVision Performance Benchmark Tool
 Measures real-time FPS, P95 inference latency, GPU memory, CPU RAM, and system temperature metrics.

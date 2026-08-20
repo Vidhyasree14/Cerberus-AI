@@ -1,3 +1,4 @@
+// Author: Vidhyasree M
 export function getWsUrl(): string {
   if (typeof window === "undefined") return "ws://127.0.0.1:8000/ws";
   const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";

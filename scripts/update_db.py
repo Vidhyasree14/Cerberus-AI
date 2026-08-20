@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 from src.core import sqlite_db
 
 def run():

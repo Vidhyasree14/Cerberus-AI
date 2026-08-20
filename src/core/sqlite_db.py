@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 High-Speed Local SQLite Database Engine for Cerberus AI.
 Provides zero-latency local SQL writes (< 2ms) and queries for violation events,

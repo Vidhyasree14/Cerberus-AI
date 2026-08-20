@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Pure SQL database accessor for EdgeVision backend API & Vision Pipeline.
 Provides clean query & insert helpers for violation events, worker tracks,

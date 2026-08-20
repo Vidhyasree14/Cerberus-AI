@@ -1,6 +1,6 @@
 # 🛡️ Cerberus AI — Real-Time Industrial PPE Compliance & Safety Intelligence Platform
 
-[![GitHub](https://img.shields.io/badge/GitHub-sowmiyan--s%2Fppe--detection--yolo-181717?style=flat&logo=github)](https://github.com/sowmiyan-s/ppe-detection-yolo)
+[![GitHub](https://img.shields.io/badge/GitHub-Vidhyasree14%2FCerberus--AI-181717?style=flat&logo=github)](https://github.com/Vidhyasree14/Cerberus-AI)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg?style=flat&logo=fastapi)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat&logo=python)](https://www.python.org)
 [![YOLOv11](https://img.shields.io/badge/Detection-YOLOv11-00FFFF.svg?style=flat)](https://ultralytics.com)
@@ -11,7 +11,9 @@
 **Cerberus AI** is an industrial computer-vision platform engineered for real-time Personal Protective Equipment (PPE) compliance monitoring and safety verification across plant floors, construction zones, work-at-height platforms, and hazardous environments.
 
 Featuring a 5-stage inference & temporal validation pipeline, persistent worker tracking (ByteTrack), dynamic per-zone safety rules, and low-latency WebSocket streaming, **Cerberus AI** guarantees high precision without false alarms caused by noisy individual frames.
-Official Repository: [https://github.com/sowmiyan-s/ppe-detection-yolo](https://github.com/sowmiyan-s/ppe-detection-yolo)
+
+- **Project Owner & Creator:** Vidhyasree M
+- **Official Repository:** [https://github.com/Vidhyasree14/Cerberus-AI](https://github.com/Vidhyasree14/Cerberus-AI)
 
 ---
 
@@ -113,6 +115,7 @@ pytest tests/test_rule_engine.py
 
 ---
 
-## 📜 License
-
-Released under the **MIT License** — see [LICENSE](LICENSE). Built for enterprise workplace safety monitoring in compliance with OSHA and ISO 45001 safety guidelines.
+## 📜 License & Copyright
+ 
+Released under the **MIT License** — see [LICENSE](LICENSE).  
+Copyright (c) 2026 **Vidhyasree M**. Built for enterprise workplace safety monitoring in compliance with OSHA and ISO 45001 safety guidelines.

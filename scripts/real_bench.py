@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Real inference benchmark for EdgeVision PPE detector.
 Measures actual YOLO track FPS on GPU with the project's custom model so we

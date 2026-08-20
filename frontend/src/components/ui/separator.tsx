@@ -1,3 +1,4 @@
+// Author: Vidhyasree M
 import * as React from "react";
 import * as SeparatorPrimitive from "@radix-ui/react-separator";
 

@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Stage 2 pre-processing – Industrial Image Enhancer.
 

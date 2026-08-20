@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 path: Construction PPE Detection Combined.yolov8
 train: train/images
 val: valid/images

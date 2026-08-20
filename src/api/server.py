@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 EdgeVision – FastAPI WebSocket live-streaming server.
 

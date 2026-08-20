@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 EdgeVision SQL Database Initialization and Seeding Script
 Initializes SQLite database schema with default tables and seed records.

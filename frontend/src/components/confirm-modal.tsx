@@ -1,3 +1,4 @@
+// Author: Vidhyasree M
 import React from "react";
 import { AlertTriangle, X, Trash2, Check, Loader2 } from "lucide-react";
 

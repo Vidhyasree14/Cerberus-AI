@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Export trained YOLO model to a TensorRT FP16 engine.
 

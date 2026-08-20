@@ -1,3 +1,4 @@
+-- Author: Vidhyasree M
 -- EdgeVision Industrial PPE and Work-at-Height Safety Monitoring Platform
 -- Complete PostgreSQL Relational Database Schema
 -- Version: 1.0.0

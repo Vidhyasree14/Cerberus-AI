@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Central configuration for the EdgeVision PPE Compliance Platform.
 All tuneable values live here; environment variables override where relevant.

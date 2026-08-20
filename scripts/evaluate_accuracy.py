@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 EdgeVision Per-Class Accuracy Evaluation Script
 Calculates Precision, Recall, mAP50, and mAP50-95 per PPE safety class.

@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Stage 1 + 2 + 3 – Person detection & tracking, PPE detection, and association.
 

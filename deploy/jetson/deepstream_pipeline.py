@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 EdgeVision NVIDIA DeepStream 9.1 Python Integration Pipeline.
 

@@ -28,7 +28,7 @@ pip3 install -r requirements.txt
 
 ### Step 2: Clone Repository & Transfer Weights
 ```bash
-git clone https://github.com/sowmiyan-s/test-repo.git /opt/edgevision
+git clone https://github.com/Vidhyasree14/Cerberus-AI.git /opt/edgevision
 cd /opt/edgevision
 ```
 

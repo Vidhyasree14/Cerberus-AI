@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Author: Vidhyasree M
 # EdgeVision NVIDIA Jetson Orin / DeepStream 9.1 Automated Installation Script
 
 set -e

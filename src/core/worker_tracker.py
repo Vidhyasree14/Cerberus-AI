@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Persistent Worker Tracker — majority-voting PPE state across frames.
 

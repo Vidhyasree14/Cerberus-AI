@@ -1,4 +1,5 @@
 @echo off
+REM Author: Vidhyasree M
 echo Starting Cerberus AI Fullstack...
 
 REM Database is initialized automatically by the backend now

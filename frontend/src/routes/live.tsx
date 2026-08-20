@@ -1,3 +1,4 @@
+// Author: Vidhyasree M
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { AlertTriangle, Camera, HardHat, ShieldCheck, Activity, Grid, Maximize2, Play, Pause, RotateCcw, RotateCw, CheckCircle2, Radio } from "lucide-react";

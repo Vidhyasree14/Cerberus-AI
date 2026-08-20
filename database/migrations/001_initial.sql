@@ -1,3 +1,4 @@
+-- Author: Vidhyasree M
 -- Migration 001 – initial schema
 -- Idempotent: wraps the full schema creation.
 -- Usage: psql -U ppe_user -d ppe_db -f database/migrations/001_initial.sql

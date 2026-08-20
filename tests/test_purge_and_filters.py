@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """Tests for violation purging, worker deletion, and date range filtering."""
 
 import pytest

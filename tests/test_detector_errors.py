@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Unit tests for bug fixes in src/core/detector.py
 """

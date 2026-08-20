@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 Export trained YOLO model to ONNX format.
 

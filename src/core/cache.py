@@ -1,3 +1,4 @@
+# Author: Vidhyasree M
 """
 High-Performance In-Memory TTL Cache Engine for EdgeVision SQL backend.
 Provides async-safe TTL caching, tag-based auto-invalidation, hit/miss metrics,
