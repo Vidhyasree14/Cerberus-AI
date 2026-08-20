@@ -8,7 +8,7 @@ Usage
 -----
 python export_onnx.py
 python export_onnx.py --model ppe_training/custom_model/weights/best.pt
-python export_onnx.py --model best.pt --imgsz 1280 --dynamic
+python  export_onnx.py --model best.pt --imgsz 1280 --dynamic
 """
 
 from __future__ import annotations
