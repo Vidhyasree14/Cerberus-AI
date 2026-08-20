@@ -1,5 +1,11 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "cerberus-ai-frontend",
+  "version": "1.0.0",
+  "author": "Vidhyasree M",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vidhyasree14/Cerberus-AI"
+  },
   "private": true,
   "sideEffects": false,
   "type": "module",

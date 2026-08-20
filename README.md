@@ -19,22 +19,22 @@ Featuring a 5-stage inference & temporal validation pipeline, persistent worker 
 
 ## 📚 Technical Documentation Sitemap
 
-Explore the detailed technical documentation suite in [`docs/`](file:///d:/PROJECTS/PPE%20DETECTION/docs/):
+Explore the detailed technical documentation suite in [`docs/`](docs/):
 
 | Guide / Report | Focus Area | Description |
 | :--- | :--- | :--- |
-| 🏗️ [Architecture Documentation](file:///d:/PROJECTS/PPE%20DETECTION/docs/architecture.md) | System Design | 5-stage vision pipeline, data flow, & concurrency model |
-| ⚡ [Performance & Multi-Cam Optimization](file:///d:/PROJECTS/PPE%20DETECTION/docs/performance_optimization.md) | Optimization | I/O thread isolation, dynamic resolution scaling, & benchmarks |
-| 📡 [API Documentation](file:///d:/PROJECTS/PPE%20DETECTION/docs/api_documentation.md) | Integration | Full RESTful API endpoints & WebSocket payload specs |
-| 📊 [Hardware Benchmark Report](file:///d:/PROJECTS/PPE%20DETECTION/docs/benchmark_report.md) | Benchmarks | Throughput, P95 latency, & thermal stats (Jetson / x86) |
-| 🎯 [Accuracy Evaluation Report](file:///d:/PROJECTS/PPE%20DETECTION/docs/accuracy_report.md) | ML Metrics | 19-class precision, recall, mAP50, & environmental test stats |
-| 🚀 [NVIDIA Jetson Setup Guide](file:///d:/PROJECTS/PPE%20DETECTION/docs/jetson_setup.md) | Deployment | JetPack 6.x installation, systemd service, & power modes |
-| ⚡ [TensorRT Acceleration Guide](file:///d:/PROJECTS/PPE%20DETECTION/docs/TENSORRT_GUIDE.md) | Edge Acceleration | FP16 & INT8 engine compilation & DeepStream setup |
-| 🏷️ [Dataset & Labelling Guide](file:///d:/PROJECTS/PPE%20DETECTION/docs/dataset_guide.md) | Training Data | 19-class schema, augmentation, & YOLOv8 layout |
-| 🎬 [Demonstration & Walkthrough](file:///d:/PROJECTS/PPE%20DETECTION/docs/demo_guide.md) | Live Demo | Step-by-step control room dashboard & terminal guide |
-| 📖 [Operational User Guide](file:///d:/PROJECTS/PPE%20DETECTION/docs/user_guide.md) | User Operations | Operator manual for live triage, zone setup, & reports |
-| 🖥️ [Frontend Dashboard Guide](file:///d:/PROJECTS/PPE%20DETECTION/frontend/README.md) | Web UI | React 19 + TanStack file-based routing frontend guide |
-| 🎯 [Model Training Guide](file:///d:/PROJECTS/PPE%20DETECTION/training/README.md) | AI Model | Fine-tuning YOLOv11 on local GPU, Kaggle, or Colab |
+| 🏗️ [Architecture Documentation](docs/architecture.md) | System Design | 5-stage vision pipeline, data flow, & concurrency model |
+| ⚡ [Performance & Multi-Cam Optimization](docs/performance_optimization.md) | Optimization | I/O thread isolation, dynamic resolution scaling, & benchmarks |
+| 📡 [API Documentation](docs/api_documentation.md) | Integration | Full RESTful API endpoints & WebSocket payload specs |
+| 📊 [Hardware Benchmark Report](docs/benchmark_report.md) | Benchmarks | Throughput, P95 latency, & thermal stats (Jetson / x86) |
+| 🎯 [Accuracy Evaluation Report](docs/accuracy_report.md) | ML Metrics | 19-class precision, recall, mAP50, & environmental test stats |
+| 🚀 [NVIDIA Jetson Setup Guide](docs/jetson_setup.md) | Deployment | JetPack 6.x installation, systemd service, & power modes |
+| ⚡ [TensorRT Acceleration Guide](docs/TENSORRT_GUIDE.md) | Edge Acceleration | FP16 & INT8 engine compilation & DeepStream setup |
+| 🏷️ [Dataset & Labelling Guide](docs/dataset_guide.md) | Training Data | 19-class schema, augmentation, & YOLOv8 layout |
+| 🎬 [Demonstration & Walkthrough](docs/demo_guide.md) | Live Demo | Step-by-step control room dashboard & terminal guide |
+| 📖 [Operational User Guide](docs/user_guide.md) | User Operations | Operator manual for live triage, zone setup, & reports |
+| 🖥️ [Frontend Dashboard Guide](frontend/README.md) | Web UI | React 19 + TanStack file-based routing frontend guide |
+| 🎯 [Model Training Guide](training/README.md) | AI Model | Fine-tuning YOLOv11 on local GPU, Kaggle, or Colab |
 
 ---
 

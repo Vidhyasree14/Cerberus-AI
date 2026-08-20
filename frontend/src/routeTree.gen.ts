@@ -1,4 +1,3 @@
-// Author: Vidhyasree M
 /* eslint-disable */
 
 // @ts-nocheck
