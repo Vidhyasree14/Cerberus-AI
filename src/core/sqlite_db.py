@@ -36,11 +36,13 @@ ZONE_CANONICAL_MAP = {
     "work-at-height": "Work at Height Platform",
     "zone-02": "Work at Height Platform",
     "zone_02": "Work at Height Platform",
-    "construction": "Construction Area",
-    "construction_area": "Construction Area",
-    "construction area": "Construction Area",
-    "zone-03": "Construction Area",
-    "zone_03": "Construction Area",
+    "construction": "Construction Site",
+    "construction_site": "Construction Site",
+    "construction site": "Construction Site",
+    "construction_area": "Construction Site",
+    "construction area": "Construction Site",
+    "zone-03": "Construction Site",
+    "zone_03": "Construction Site",
     "restricted_machinery": "Restricted Machinery Zone",
     "restricted machinery": "Restricted Machinery Zone",
     "restricted machinery zone": "Restricted Machinery Zone",
@@ -167,6 +169,7 @@ def init_sqlite_db() -> None:
                 now_iso = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
                 zones = [
                     ("General Plant Floor", "General Plant Floor", "General plant area – basic PPE required", json.dumps(["helmet", "vest"]), 8, 5, 0.60, now_iso),
+                    ("Construction Site", "Construction Site", "Active construction site – heavy PPE required", json.dumps(["helmet", "vest", "boots", "gloves"]), 8, 3, 0.65, now_iso),
                 ]
                 cur.executemany("INSERT INTO zones (id, name, description, required_ppe, frame_threshold, dwell_seconds, confidence, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", zones)
                 conn.commit()
@@ -175,7 +178,9 @@ def init_sqlite_db() -> None:
             cur.execute("SELECT COUNT(*) FROM cameras")
             if cur.fetchone()[0] == 0:
                 cameras = [
-                    ("CAM-01", "Cerberus AI Primary Camera", "0", "0", "webcam", "Plant Floor Area", 1, "General Plant Floor", 20)
+                    ("CAM-01", "General Plant Floor - Example Stream", "https://www.youtube.com/watch?v=beHMAngdGxU", "https://www.youtube.com/watch?v=beHMAngdGxU", "youtube", "Plant Assembly Floor", 1, "General Plant Floor", 20),
+                    ("CAM-02", "Construction Site - Example Stream", "https://youtu.be/HceUrCK0LrQ", "https://youtu.be/HceUrCK0LrQ", "youtube", "Construction Site - Zone A", 1, "Construction Site", 20),
+                    ("CAM-LOCAL", "Local PC Webcam", "0", "0", "webcam", "Plant Floor Workstation", 1, "General Plant Floor", 20),
                 ]
                 cur.executemany("INSERT INTO cameras (id, name, source, stream_url, type, location, is_active, zone_id, target_fps) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", cameras)
                 conn.commit()

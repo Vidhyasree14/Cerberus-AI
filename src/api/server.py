@@ -87,10 +87,33 @@ def open_camera_source(source: str) -> cv2.VideoCapture | None:
     # Apply FFmpeg network resilience options globally for OpenCV video capture
     os.environ["OPENCV_FFMPEG_CAPTURE_OPTIONS"] = "rtsp_transport;tcp|reconnect;1|reconnect_streamed;1|reconnect_delay_max;5|stimeout;10000000|timeout;10000000"
 
-    if src_str.isdigit():
+    # Check for Jetson hardware GStreamer CSI camera pipeline
+    if "nvarguscamerasrc" in src_str or "appsink" in src_str or "videoconvert" in src_str:
+        try:
+            c = cv2.VideoCapture(src_str, cv2.CAP_GSTREAMER)
+            if c and c.isOpened():
+                ok, test_frame = c.read()
+                if ok and test_frame is not None:
+                    log.info("Successfully opened Jetson GStreamer CSI camera pipeline.")
+                    cap = c
+                else:
+                    c.release()
+        except Exception as gst_err:
+            log.warning("GStreamer pipeline failed to open: %s", gst_err)
+
+    if cap is None and src_str.isdigit():
         idx = int(src_str)
-        # Try multiple OpenCV video backends on Windows (DSHOW -> MSMF -> Default)
-        for backend in [cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY]:
+        # Try multiple OpenCV video backends (V4L2 for Linux/Jetson, DSHOW/MSMF for Windows, ANY as fallback)
+        backends = []
+        if hasattr(cv2, "CAP_V4L2"):
+            backends.append(cv2.CAP_V4L2)
+        if hasattr(cv2, "CAP_DSHOW"):
+            backends.append(cv2.CAP_DSHOW)
+        if hasattr(cv2, "CAP_MSMF"):
+            backends.append(cv2.CAP_MSMF)
+        backends.append(cv2.CAP_ANY)
+
+        for backend in backends:
             try:
                 c = cv2.VideoCapture(idx, backend)
                 if c and c.isOpened():
@@ -103,7 +126,8 @@ def open_camera_source(source: str) -> cv2.VideoCapture | None:
                         c.release()
             except Exception:
                 pass
-    elif os.path.isfile(src_str):
+    elif cap is None and os.path.isfile(src_str):
+
         try:
             c = cv2.VideoCapture(src_str)
             if c and c.isOpened():
@@ -1265,17 +1289,21 @@ async def update_settings_api(body: dict):
             log.info("Updated show_main_webcam setting to: %s", _show_main_webcam)
 
             if not _show_main_webcam:
-                # Stop any active camera pipeline using webcam 0
-                to_stop = [c_id for c_id, c_data in list(_active_cameras.items()) if c_data.get("source") == "0"]
+                # Stop any active camera pipeline using webcam 0 or numeric hardware indices
+                to_stop = [c_id for c_id, c_data in list(_active_cameras.items()) if str(c_data.get("source", "")).isdigit() or c_data.get("source") == "0"]
                 for c_id in to_stop:
                     stop_camera_pipeline(c_id)
+                await manager.broadcast_json({"type": "camera_deleted", "id": "CAM-LOCAL"})
+                await manager.broadcast_json({"type": "camera_switched", "activeCameraId": "CAM-01"})
             else:
-                # Enable and start webcam 0 if available
+                # Enable and start webcam if available
                 db_cameras = await db.get_cameras()
                 for cam in db_cameras:
                     src = str(cam.get("source") or cam.get("streamUrl") or "")
-                    if src == "0" and cam.get("id") not in _active_cameras:
-                        start_camera_pipeline(cam["id"], "0", cam.get("zone_id") or "General Plant Floor")
+                    if (src == "0" or src.isdigit()) and cam.get("id") not in _active_cameras:
+                        start_camera_pipeline(cam["id"], src, cam.get("zone_id") or "General Plant Floor")
+                await manager.broadcast_json({"type": "camera_added", "id": "CAM-LOCAL"})
+                await manager.broadcast_json({"type": "camera_switched", "activeCameraId": "CAM-LOCAL"})
 
     if "db_engine" in body or "engine" in body:
         engine_val = body.get("db_engine") or body.get("engine")
@@ -1342,7 +1370,9 @@ async def sync_databases_api():
 
 @app.get("/api/cameras")
 async def get_cameras_api():
-    """Return cameras from DB, enriched with live parallel pipeline status."""
+    """Return cameras from DB, enriched with live parallel pipeline status.
+    If local webcam camera is off (disabled via settings or deactivated), it is not shown.
+    """
     db_cameras = await db.get_cameras()
     result = []
     for cam in db_cameras:
@@ -1352,6 +1382,13 @@ async def get_cameras_api():
         src = str(cam.get("source") or cam.get("streamUrl") or "0")
         cam_type = cam.get("type") or ("webcam" if src.isdigit() else "stream")
         
+        # Check if this camera is a local physical webcam
+        is_local_cam = (cam_type == "webcam" or src.isdigit() or src == "0")
+        
+        # If local camera is off (either show_main_webcam toggle is off or camera is inactive/offline), don't show that camera
+        if is_local_cam and (not _show_main_webcam or cam.get("is_active") == 0):
+            continue
+
         actual_fps = round(c_data["fps_stats"]["fps"], 1) if (c_data and is_live) else 0.0
         latency_ms = round(1000.0 / max(1, actual_fps), 1) if (c_data and is_live and actual_fps > 0) else 0.0
 

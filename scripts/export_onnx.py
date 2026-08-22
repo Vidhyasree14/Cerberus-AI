@@ -32,17 +32,19 @@ log = logging.getLogger(__name__)
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Export YOLO model to ONNX")
+    parser = argparse.ArgumentParser(description="Export YOLO model to ONNX for Jetson / TensorRT deployment")
     parser.add_argument(
         "--model",
         default="models/best.pt",
         help="Path to trained .pt weights",
     )
-    parser.add_argument("--imgsz",   type=int, default=640,   help="Input image size")
-    parser.add_argument("--batch",   type=int, default=1,     help="Batch size for ONNX export")
-    parser.add_argument("--dynamic", action="store_true",     help="Dynamic axes (variable batch/size)")
-    parser.add_argument("--opset",   type=int, default=17,    help="ONNX opset version")
-    parser.add_argument("--simplify",action="store_true", default=True, help="Simplify ONNX graph")
+    parser.add_argument("--imgsz",   type=int, default=640,   help="Input image size (default: 640)")
+    parser.add_argument("--batch",   type=int, default=1,     help="Batch size for ONNX export (default: 1)")
+    parser.add_argument("--dynamic", action="store_true",     help="Dynamic axes (Note: fixed shape is faster on Jetson)")
+    parser.add_argument("--half",    action="store_true",     help="Export with FP16 half-precision for Jetson GPU")
+    parser.add_argument("--opset",   type=int, default=17,    help="ONNX opset version (default: 17 for TensorRT 8.x/10.x)")
+    parser.add_argument("--simplify",action="store_true", default=True, help="Simplify ONNX graph with onnxslim")
+    parser.add_argument("--device",  default="0",             help="Device to use for export (e.g. 0 for Jetson GPU or cpu)")
     return parser.parse_args()
 
 
@@ -55,8 +57,8 @@ def export(args: argparse.Namespace) -> str:
     model = YOLO(args.model)
 
     log.info(
-        "Exporting to ONNX (imgsz=%d, batch=%d, opset=%d, dynamic=%s, simplify=%s)",
-        args.imgsz, args.batch, args.opset, args.dynamic, args.simplify,
+        "Exporting to ONNX (imgsz=%d, batch=%d, opset=%d, half=%s, dynamic=%s, simplify=%s, device=%s)",
+        args.imgsz, args.batch, args.opset, args.half, args.dynamic, args.simplify, args.device,
     )
 
     path = model.export(
@@ -64,8 +66,10 @@ def export(args: argparse.Namespace) -> str:
         imgsz    = args.imgsz,
         batch    = args.batch,
         dynamic  = args.dynamic,
+        half     = args.half,
         opset    = args.opset,
         simplify = args.simplify,
+        device   = args.device,
     )
 
     expected = args.model.replace(".pt", ".onnx")
@@ -73,7 +77,7 @@ def export(args: argparse.Namespace) -> str:
 
     if os.path.exists(onnx_path):
         size_mb = os.path.getsize(onnx_path) / 1e6
-        log.info("ONNX export complete: %s (%.1f MB)", onnx_path, size_mb)
+        log.info("✅ ONNX export complete: %s (%.1f MB)", onnx_path, size_mb)
     else:
         log.warning("ONNX file not found at expected path: %s", onnx_path)
 
@@ -87,8 +91,12 @@ if __name__ == "__main__":
     )
     args = parse_args()
     out  = export(args)
-    print(f"\nONNX model saved to: {out}")
-    print("\nNext steps:")
-    print("  • Copy the .onnx file to your Jetson device")
-    print("  • Run: python export_tensorrt.py --model", out.replace(".onnx", ".pt"))
-    print("  • See docs/tensorrt_instructions.md for full Jetson TensorRT build steps")
+    print(f"\n✅ ONNX model saved to: {out}")
+    print("\nNext steps for NVIDIA Jetson / DeepStream:")
+    print(f"  1. Copy {out} to your Jetson device (if exported on PC)")
+    print(f"  2. Build TensorRT engine directly on Jetson:")
+    print(f"     python scripts/export_tensorrt.py --model {args.model}")
+    print(f"     # OR use trtexec:")
+    print(f"     /usr/src/tensorrt/bin/trtexec --onnx={out} --saveEngine={out.replace('.onnx', '.engine')} --fp16")
+    print(f"  3. Set MODEL_PATH={out.replace('.onnx', '.engine')} in .env")
+

@@ -129,6 +129,7 @@ _MEM_VIOLATIONS: list[dict[str, Any]] = sqlite_db.get_violations_sql(1000) or _l
 
 _DEFAULT_SEED_ZONES = [
     {"id": "General Plant Floor", "name": "General Plant Floor", "description": "General plant area – basic PPE required", "required_ppe": ["helmet", "vest"], "frame_threshold": 8, "dwell_seconds": 5, "confidence": 0.60},
+    {"id": "Construction Site", "name": "Construction Site", "description": "Active construction site – heavy PPE required", "required_ppe": ["helmet", "vest", "boots", "gloves"], "frame_threshold": 8, "dwell_seconds": 3, "confidence": 0.65},
 ]
 
 _MEM_ZONES: list[dict[str, Any]] = sqlite_db.get_zones_sql() or _load_fallback_json(ZONES_JSON, _DEFAULT_SEED_ZONES)
@@ -136,9 +137,33 @@ _MEM_ZONES: list[dict[str, Any]] = sqlite_db.get_zones_sql() or _load_fallback_j
 _DEFAULT_SEED_CAMERAS = [
     {
         "id": "CAM-01",
-        "name": "EdgeVision Primary Camera",
+        "name": "General Plant Floor - Example Stream",
+        "source": "https://www.youtube.com/watch?v=beHMAngdGxU",
+        "streamUrl": "https://www.youtube.com/watch?v=beHMAngdGxU",
+        "type": "youtube",
+        "location": "Plant Assembly Floor",
+        "is_active": 1,
+        "zone_id": "General Plant Floor",
+        "target_fps": 20
+    },
+    {
+        "id": "CAM-02",
+        "name": "Construction Site - Example Stream",
+        "source": "https://youtu.be/HceUrCK0LrQ",
+        "streamUrl": "https://youtu.be/HceUrCK0LrQ",
+        "type": "youtube",
+        "location": "Construction Site - Zone A",
+        "is_active": 1,
+        "zone_id": "Construction Site",
+        "target_fps": 20
+    },
+    {
+        "id": "CAM-LOCAL",
+        "name": "Local PC Webcam",
         "source": "0",
-        "location": "Plant Floor Area",
+        "streamUrl": "0",
+        "type": "webcam",
+        "location": "Plant Floor Workstation",
         "is_active": 1,
         "zone_id": "General Plant Floor",
         "target_fps": 20

@@ -19,6 +19,16 @@ import sys
 import os
 
 try:
+    import torch
+    _orig = torch.load
+    def _safe_load(f, *args, **kwargs):
+        kwargs.setdefault("weights_only", False)
+        return _orig(f, *args, **kwargs)
+    torch.load = _safe_load
+except Exception:
+    pass
+
+try:
     from ultralytics import YOLO
 except ImportError:
     print("Error: ultralytics is not installed. Run `pip install ultralytics`")
@@ -28,7 +38,9 @@ def main():
     parser = argparse.ArgumentParser(description="Export YOLO model to TensorRT for Jetson")
     parser.add_argument("--model", type=str, default="models/best.pt", help="Path to the PyTorch model (.pt)")
     parser.add_argument("--imgsz", type=int, default=640, help="Target image size (e.g. 640 or 416)")
-    parser.add_argument("--workspace", type=int, default=4, help="Max workspace size in GB")
+    parser.add_argument("--workspace", type=int, default=4, help="Max workspace size in GB (default: 4)")
+    parser.add_argument("--int8", action="store_true", help="Enable INT8 quantization (requires calibration)")
+    parser.add_argument("--device", default="0", help="CUDA device index (default: 0)")
     args = parser.parse_args()
 
     if not os.path.exists(args.model):
@@ -38,25 +50,30 @@ def main():
     print(f"Loading PyTorch model: {args.model}")
     model = YOLO(args.model)
 
-    print(f"\n--- Starting TensorRT Export ---")
+    precision = "INT8" if args.int8 else "FP16"
+    print(f"\n--- Starting TensorRT Export for Jetson ---")
     print(f"Image Size: {args.imgsz}")
-    print(f"Precision:  FP16 (half=True)")
+    print(f"Precision:  {precision}")
     print(f"Workspace:  {args.workspace} GB")
+    print(f"Device:     {args.device}")
     
     try:
         exported_path = model.export(
             format="engine",
             imgsz=args.imgsz,
-            quantize=True,   # FP16 — critical for Jetson performance
-            dynamic=False,   # Fixed shapes are faster
+            half=not args.int8,
+            int8=args.int8,
+            dynamic=False,   # Fixed shapes deliver maximum FPS on Jetson
             workspace=args.workspace,
-            simplify=True
+            device=args.device,
+            simplify=True,
         )
         print(f"\n✅ Export successful! TensorRT engine saved to: {exported_path}")
-        print("The EdgeVision pipeline will automatically prefer this .engine file if placed in the same directory as the .pt model.")
+        print("The EdgeVision pipeline will automatically detect and load this .engine file.")
     except Exception as e:
         print(f"\n❌ Export failed: {e}")
-        print("Note: TensorRT export usually must be run on the target NVIDIA Jetson device, not a standard PC.")
+        print("Note: TensorRT engine compilation must be executed directly on the target NVIDIA Jetson device.")
 
 if __name__ == "__main__":
     main()
+

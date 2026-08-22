@@ -18,5 +18,7 @@ from src.core import config
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", config.SERVER_PORT))
-    print(f"Starting EdgeVision Server on {config.SERVER_HOST}:{port}...")
-    uvicorn.run("src.api.server:app", host=config.SERVER_HOST, port=port, reload=True)
+    reload = os.getenv("RELOAD", "false").lower() == "true"
+    print(f"Starting EdgeVision Server on {config.SERVER_HOST}:{port} (reload={reload})...")
+    uvicorn.run("src.api.server:app", host=config.SERVER_HOST, port=port, reload=reload)
+

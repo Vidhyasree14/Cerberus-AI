@@ -6,7 +6,7 @@ REM Database is initialized automatically by the backend now
 
 REM Start the backend in a new command prompt window
 echo Starting FastAPI Backend...
-start "Backend (FastAPI)" cmd /c "python -m src.api.server"
+start "Backend (FastAPI)" cmd /c "py -m src.api.server"
 
 REM Give the backend a few seconds to start
 timeout /t 3 /nobreak >nul

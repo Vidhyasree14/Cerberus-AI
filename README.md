@@ -19,10 +19,13 @@ Featuring a 5-stage inference & temporal validation pipeline, persistent worker 
 
 ## 📚 Technical Documentation Sitemap
 
-Explore the detailed technical documentation suite in [`docs/`](docs/):
+Explore the comprehensive master documentation and specialized subsystem guides:
+
+- 📖 **[Master Project Documentation (Complete Technical & Non-Technical Guide)](PROJECT_DOCUMENTATION.md)**
 
 | Guide / Report | Focus Area | Description |
 | :--- | :--- | :--- |
+| 📖 [Complete Master Documentation](PROJECT_DOCUMENTATION.md) | Full Platform | Complete non-technical executive overview + deep technical engineering spec |
 | 🏗️ [Architecture Documentation](docs/architecture.md) | System Design | 5-stage vision pipeline, data flow, & concurrency model |
 | ⚡ [Performance & Multi-Cam Optimization](docs/performance_optimization.md) | Optimization | I/O thread isolation, dynamic resolution scaling, & benchmarks |
 | 📡 [API Documentation](docs/api_documentation.md) | Integration | Full RESTful API endpoints & WebSocket payload specs |

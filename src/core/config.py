@@ -171,10 +171,11 @@ PPE_ALIASES: dict[str, str] = {
 # Each zone maps to a set of required PPE class names.
 ZONE_RULES: dict[str, set[str]] = {
     "General Plant Floor":       {"helmet", "vest"},
-    "Construction Area":        {"helmet", "vest", "boots"},
-    "Work at Height Platform":      {"helmet", "vest", "boots"},
+    "Construction Site":         {"helmet", "vest", "boots", "gloves"},
+    "Construction Area":         {"helmet", "vest", "boots", "gloves"},
+    "Work at Height Platform":   {"helmet", "vest", "boots"},
     "Restricted Machinery Zone": {"helmet", "vest", "glasses"},
-    "Hazardous Chemical Area":  {"helmet", "vest", "boots", "glasses", "mask", "gloves"},
+    "Hazardous Chemical Area":   {"helmet", "vest", "boots", "glasses", "mask", "gloves"},
 }
 
 DEFAULT_ZONE = "General Plant Floor"
