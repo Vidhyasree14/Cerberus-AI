@@ -54,6 +54,26 @@ chmod +x deploy/jetson/install.sh
 ./deploy/jetson/install.sh
 ```
 
+Successful installation shows acknowledgements similar to:
+
+```text
+[OK] System packages installed
+[OK] Torch CUDA is available
+[OK] TorchVision and TensorRT are available
+[OK] pip tools updated
+[OK] Python dependencies installed and checked
+[OK] Jetson environment configured to use models/best.engine
+Node.js: v22.x.x
+npm: 10.x.x
+[OK] Node.js and npm installed
+[OK] Frontend dependencies installed
+[OK] TensorRT engine available at models/best.engine
+[OK] Jetson runtime verification completed
+=== Installation Completed Successfully ===
+```
+
+If a command fails, the script prints `[ERROR]` with the failing line and command, then stops.
+
 The installer installs Jetson OpenCV, Python requirements, ONNX export packages, Node.js 22, frontend packages, and verifies the hardware stack. It creates `.env` when needed, sets `MODEL_PATH=models/best.engine`, and creates the device-specific TensorRT engine:
 
 ```text
