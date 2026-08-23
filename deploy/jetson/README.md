@@ -54,7 +54,7 @@ chmod +x deploy/jetson/install.sh
 ./deploy/jetson/install.sh
 ```
 
-The installer installs Jetson OpenCV, Python requirements, ONNX export packages, Node.js 22, frontend packages, and verifies the hardware stack. It also creates the device-specific TensorRT engine:
+The installer installs Jetson OpenCV, Python requirements, ONNX export packages, Node.js 22, frontend packages, and verifies the hardware stack. It creates `.env` when needed, sets `MODEL_PATH=models/best.engine`, and creates the device-specific TensorRT engine:
 
 ```text
 models/best.pt -> models/best.engine

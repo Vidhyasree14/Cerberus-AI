@@ -29,7 +29,17 @@ python3 -m pip install --upgrade pip setuptools wheel
 python3 -m pip install -r requirements.txt
 python3 -m pip check
 
-# 5. Install Node.js 22 with nvm for the current user
+# 5. Configure the Jetson model path explicitly.
+if [ ! -f .env ]; then
+    cp .env.jetson.example .env
+fi
+if grep -q '^MODEL_PATH=' .env; then
+    sed -i 's|^MODEL_PATH=.*|MODEL_PATH=models/best.engine|' .env
+else
+    printf '\nMODEL_PATH=models/best.engine\n' >> .env
+fi
+
+# 6. Install Node.js 22 with nvm for the current user
 export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
 if [ ! -s "$NVM_DIR/nvm.sh" ]; then
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
@@ -40,12 +50,12 @@ nvm alias default 22
 node --version
 npm --version
 
-# 6. Install frontend packages
+# 7. Install frontend packages
 cd frontend
 npm install
 cd ..
 
-# 7. Build a device-specific TensorRT engine from the repository model.
+# 8. Build a device-specific TensorRT engine from the repository model.
 if [ ! -f models/best.pt ]; then
     echo "ERROR: models/best.pt was not found in the cloned repository."
     exit 1
