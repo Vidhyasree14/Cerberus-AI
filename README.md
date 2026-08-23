@@ -71,7 +71,7 @@ flowchart LR
 
 ### 1. Prerequisites
 - **Python:** `3.10` or higher
-- **Node.js:** `v18+` & `npm`
+- **Node.js:** `v22+` & `npm`
 - **GPU (Optional):** NVIDIA GPU with CUDA 12.x for accelerated inference (CPU fallback included).
 
 ### 2. Fullstack One-Click Launch (Windows)
@@ -83,7 +83,59 @@ This automatically starts:
 - **FastAPI Backend:** `http://localhost:8000` (API & WebSockets)
 - **React Control Room:** `http://localhost:5173`
 
-### 3. Manual Server Launch (CLI)
+### 3. Fullstack Launch over Jetson SSH
+The Windows batch file is not used on Jetson. Run these commands from the beginning:
+
+```bash
+ssh <username>@<jetson-ip>
+sudo apt update
+sudo apt install -y git
+git clone https://github.com/Vidhyasree14/Cerberus-AI.git
+cd ~/Cerberus-AI
+
+# These must be installed from NVIDIA/JetPack for the device's JetPack version.
+python3 -c "import torch; print(torch.cuda.is_available())"
+python3 -c "import torchvision, tensorrt; print('Jetson AI packages OK')"
+
+chmod +x deploy/jetson/install.sh
+./deploy/jetson/install.sh
+```
+
+The installer installs the remaining system and Python packages, Node.js 22, frontend packages, ONNX dependencies, and the device-specific `models/best.engine` file.
+
+Start the backend in SSH terminal 1:
+
+```bash
+cd ~/Cerberus-AI
+python3 -m src.api.server
+```
+
+Open a second SSH terminal and start the React dashboard:
+
+```bash
+ssh <username>@<jetson-ip>
+cd ~/Cerberus-AI/frontend
+npm run dev
+```
+
+Open `http://<jetson-ip>:5173` in a browser from another computer on the same private network. For Jetson-specific dependency installation and TensorRT setup, see [NVIDIA Jetson Setup Guide](docs/jetson_setup.md).
+
+### 4. Remote Access from Another System
+For access from a different computer, the safest option is an SSH tunnel. Run this command on the computer that will display the dashboard while the backend and frontend remain running on the Jetson:
+
+```bash
+ssh -L 5173:127.0.0.1:5173 -L 8000:127.0.0.1:8000 <username>@<jetson-ip>
+```
+
+Then open the dashboard locally at:
+
+```text
+http://localhost:5173
+```
+
+If the other computer is on a different network, connect the systems through a VPN such as Tailscale or WireGuard first. Do not expose ports `5173` or `8000` directly to the public internet.
+
+### 5. Manual Server Launch (CLI)
 
 #### Backend Server
 ```bash

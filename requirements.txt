@@ -1,11 +1,15 @@
 ultralytics>=8.2.0       # YOLOv8 detection, tracking, export
-opencv-python-headless>=4.8.0 # frame capture, annotation, video I/O
+# Jetson uses JetPack's python3-opencv for CUDA/GStreamer camera support.
+opencv-python-headless>=4.8.0; platform_machine != "aarch64" # frame capture, annotation, video I/O
+onnx>=1.12.0             # intermediate model format for export
+onnxslim>=0.1.71         # ONNX graph simplification during export
 numpy>=1.24.0            # array operations
 
 # ── Web framework (FastAPI server) ─────────────────────────────────────────────
 fastapi>=0.110.0
 uvicorn[standard]>=0.29.0
 websockets>=12.0
+python-multipart>=0.0.9   # FastAPI file and form uploads
 
 # ── Dashboard (Streamlit removed) ─────────────────────────────────────────────
 # streamlit>=1.35.0
@@ -28,5 +32,6 @@ cap-from-youtube>=0.1.0  # youtube stream cap fallback
 lap>=0.5.12              # tracking optimization
 pandas>=2.0.0            # data formatting and export
 openpyxl>=3.1.0          # excel format support
+reportlab>=4.0.0         # PDF report generation
 
 
