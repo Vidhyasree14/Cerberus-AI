@@ -32,6 +32,7 @@ Explore the comprehensive master documentation and specialized subsystem guides:
 | 📊 [Hardware Benchmark Report](docs/benchmark_report.md) | Benchmarks | Throughput, P95 latency, & thermal stats (Jetson / x86) |
 | 🎯 [Accuracy Evaluation Report](docs/accuracy_report.md) | ML Metrics | 19-class precision, recall, mAP50, & environmental test stats |
 | 🚀 [NVIDIA Jetson Setup Guide](docs/jetson_setup.md) | Deployment | JetPack 6.x installation, systemd service, & power modes |
+| 🧰 [Jetson SSH Quick Deployment](deploy/jetson/README.md) | Deployment | Copy-paste SSH commands for installation and launch |
 | ⚡ [TensorRT Acceleration Guide](docs/TENSORRT_GUIDE.md) | Edge Acceleration | FP16 & INT8 engine compilation & DeepStream setup |
 | 🏷️ [Dataset & Labelling Guide](docs/dataset_guide.md) | Training Data | 19-class schema, augmentation, & YOLOv8 layout |
 | 🎬 [Demonstration & Walkthrough](docs/demo_guide.md) | Live Demo | Step-by-step control room dashboard & terminal guide |
