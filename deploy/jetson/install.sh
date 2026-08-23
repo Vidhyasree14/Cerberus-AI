@@ -37,10 +37,12 @@ fi
 source "$NVM_DIR/nvm.sh"
 nvm install 22
 nvm alias default 22
+node --version
+npm --version
 
 # 6. Install frontend packages
 cd frontend
-npm ci
+npm install
 cd ..
 
 # 7. Build a device-specific TensorRT engine from the repository model.
@@ -66,4 +68,4 @@ echo "=== Installation Completed Successfully ==="
 echo "Start the backend in one terminal:"
 echo "  python3 -m src.api.server"
 echo "Start the frontend in another terminal:"
-echo "  cd frontend && npm run dev"
+echo "  cd ~/Cerberus-AI/frontend && npm run dev"
