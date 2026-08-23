@@ -102,7 +102,7 @@ chmod +x deploy/jetson/install.sh
 ./deploy/jetson/install.sh
 ```
 
-The installer installs the remaining system and Python packages, Node.js 22, frontend packages, ONNX dependencies, and the device-specific `models/best.engine` file.
+The installer installs the remaining system and Python packages from `requirements.txt`, Node.js 22, frontend packages, ONNX dependencies, and the device-specific `models/best.engine` file. Jetson OpenCV is installed through apt, while Torch, TorchVision, CUDA, and TensorRT must come from the matching JetPack release.
 
 Start the backend in SSH terminal 1:
 

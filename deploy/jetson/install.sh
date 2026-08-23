@@ -25,7 +25,8 @@ python3 -m pip install --upgrade pip setuptools wheel
 
 # 4. Install Python packages. Jetson Torch/TorchVision must be installed from
 # the NVIDIA wheel matching the device's JetPack version before this step.
-python3 -m pip install -r requirements-jetson.txt
+# requirements.txt skips pip OpenCV on Jetson ARM64; apt provides it above.
+python3 -m pip install -r requirements.txt
 python3 -m pip check
 
 # 5. Install Node.js 22 with nvm for the current user

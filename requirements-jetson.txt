@@ -1,3 +1,0 @@
-# Install JetPack-compatible torch and torchvision before this file.
-# TensorRT is supplied by JetPack and is intentionally not installed from pip.
--r requirements.txt
