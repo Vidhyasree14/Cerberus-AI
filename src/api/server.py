@@ -53,6 +53,7 @@ from src.core.vision_pipeline import VisionPipeline
 from src.core import db
 from src.core import sqlite_db
 from src.core import runtime
+from src.core import camera_discovery
 from src.core.cache import mongo_cache
 from pydantic import BaseModel
 from src.api.models import ZoneCreate, CameraCreate, DBEngineRequest
@@ -101,8 +102,14 @@ def open_camera_source(source: str) -> cv2.VideoCapture | None:
         except Exception as gst_err:
             log.warning("GStreamer pipeline failed to open: %s", gst_err)
 
-    if cap is None and src_str.isdigit():
-        idx = int(src_str)
+    is_v4l_dev = src_str.startswith("/dev/video") or (src_str.startswith("video") and src_str[5:].isdigit())
+    if cap is None and (src_str.isdigit() or is_v4l_dev):
+        if is_v4l_dev:
+            dev_idx_str = src_str.replace("/dev/video", "").replace("video", "")
+            idx = int(dev_idx_str) if dev_idx_str.isdigit() else src_str
+        else:
+            idx = int(src_str)
+
         # Try multiple OpenCV video backends (V4L2 for Linux/Jetson, DSHOW/MSMF for Windows, ANY as fallback)
         backends = []
         if hasattr(cv2, "CAP_V4L2"):
@@ -119,13 +126,29 @@ def open_camera_source(source: str) -> cv2.VideoCapture | None:
                 if c and c.isOpened():
                     ok, test_frame = c.read()
                     if ok and test_frame is not None:
-                        log.info("Successfully opened webcam index %d with backend %s", idx, backend)
+                        log.info("Successfully opened webcam %s with backend %s", str(idx), backend)
                         cap = c
                         break
                     else:
                         c.release()
             except Exception:
                 pass
+
+        # Fallback to device node path directly on Linux with CAP_V4L2
+        if (cap is None or not cap.isOpened()) and hasattr(cv2, "CAP_V4L2"):
+            v_path = src_str if src_str.startswith("/dev/video") else f"/dev/video{idx}"
+            if os.path.exists(v_path):
+                try:
+                    c = cv2.VideoCapture(v_path, cv2.CAP_V4L2)
+                    if c and c.isOpened():
+                        ok, test_frame = c.read()
+                        if ok and test_frame is not None:
+                            log.info("Successfully opened Linux V4L2 device node %s", v_path)
+                            cap = c
+                        else:
+                            c.release()
+                except Exception:
+                    pass
     elif cap is None and os.path.isfile(src_str):
 
         try:
@@ -617,31 +640,22 @@ async def lifespan(app: FastAPI):
         except Exception as warmup_err:
             log.debug("Model warmup warning: %s", warmup_err)
 
-        # PROBE WEBCAMS (Default Index 0 or External Connected Cameras 1, 2...)
+        # PROBE WEBCAMS (Linux V4L2, NVIDIA Jetson USB/CSI, Windows DirectShow/MSMF)
         default_cam_ok = False
         working_webcam_idx = "0"
         if _show_main_webcam:
-            import cv2
-            for idx in range(4):
-                for backend in [cv2.CAP_DSHOW, cv2.CAP_MSMF, cv2.CAP_ANY]:
-                    try:
-                        probe_cap = cv2.VideoCapture(idx, backend)
-                        if probe_cap and probe_cap.isOpened():
-                            ok, test_f = probe_cap.read()
-                            if ok and test_f is not None:
-                                default_cam_ok = True
-                                working_webcam_idx = str(idx)
-                                probe_cap.release()
-                                break
-                            probe_cap.release()
-                    except Exception:
-                        pass
-                if default_cam_ok:
-                    log.info("Active physical webcam discovered at index %s", working_webcam_idx)
-                    break
+            try:
+                discovered_hw_cams = camera_discovery.discover_connected_cameras()
+                if discovered_hw_cams:
+                    first_cam = discovered_hw_cams[0]
+                    working_webcam_idx = str(first_cam.get("source", "0"))
+                    default_cam_ok = True
+                    log.info("Discovered %d active physical camera(s): %s", len(discovered_hw_cams), [c['name'] for c in discovered_hw_cams])
+            except Exception as probe_err:
+                log.warning("Camera hardware probe notice: %s", probe_err)
 
             if not default_cam_ok:
-                log.warning("No physical hardware webcam found on indices 0-3. Stream pipelines will use synthetic / link sources.")
+                log.info("Physical hardware webcam not detected during boot probe. Standby stream will initialize.")
         else:
             log.info("Main PC webcam disabled by user setting; skipping webcam probe.")
 
@@ -653,10 +667,11 @@ async def lifespan(app: FastAPI):
             # Fallback to discovered external webcam if camera source is '0' but index 0 was missing
             if source == "0" and default_cam_ok and working_webcam_idx != "0":
                 source = working_webcam_idx
-                log.info("Re-routed camera %s to discovered external webcam index %s", cam_id, source)
+                log.info("Re-routed camera %s to discovered hardware camera source %s", cam_id, source)
 
-            if (source == "0" or source.isdigit()) and (not _show_main_webcam or not default_cam_ok):
-                log.info("Skipping webcam camera %s from DB (webcam unavailable or disabled by setting)", cam_id)
+            is_webcam = (source == "0" or source.isdigit() or source.startswith("/dev/video") or "nvarguscamerasrc" in source)
+            if is_webcam and not _show_main_webcam:
+                log.info("Skipping webcam camera %s from DB (webcam disabled by setting)", cam_id)
                 continue
 
             start_camera_pipeline(cam_id, source, zone)
@@ -1455,54 +1470,21 @@ async def get_camera_controls_api(cam_id: str):
 
 @app.get("/api/devices/cameras")
 async def list_physical_cameras():
-    """Probe local hardware ports to discover available webcams without lock contention."""
-    available = []
+    """Probe local hardware ports to discover available webcams across Linux, Jetson, and Windows."""
+    discovered = camera_discovery.discover_connected_cameras()
+    active_sources = {str(c_d.get("source", "")).strip() for c_d in _active_cameras.values()}
 
-    # Check active webcams in vision pipelines first
-    for c_id, c_data in _active_cameras.items():
-        src = str(c_data.get("source", ""))
-        if src.isdigit():
-            available.append({
-                "id": src,
-                "name": f"Webcam Index {src} (Active Pipeline)",
-                "source": src,
-                "resolution": "1280x720",
-                "type": "webcam",
-                "is_active": True
-            })
+    for cam in discovered:
+        cam_src = str(cam.get("source", "")).strip()
+        cam["is_active"] = cam_src in active_sources
 
-    if not available:
-        # Probe main webcam index 0
-        try:
-            cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-            if not cap.isOpened():
-                cap = cv2.VideoCapture(0)
-            if cap.isOpened():
-                w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH) or 640)
-                h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT) or 480)
-                available.append({
-                    "id": "0",
-                    "name": f"Default Webcam Index 0 ({w}x{h})",
-                    "source": "0",
-                    "resolution": f"{w}x{h}",
-                    "type": "webcam",
-                    "is_active": "0" in [c_d.get("source") for c_d in _active_cameras.values()]
-                })
-                cap.release()
-        except Exception as err:
-            log.debug("Webcam index 0 probe info: %s", err)
+    return JSONResponse(discovered)
 
-    if not available:
-        available.append({
-            "id": "0",
-            "name": "Default Webcam (Index 0)",
-            "source": "0",
-            "resolution": "640x480",
-            "type": "webcam",
-            "is_active": False
-        })
 
-    return JSONResponse(available)
+@app.get("/api/devices/environment")
+async def get_device_environment():
+    """Return OS, hardware architecture, and camera subsystem runtime environment details."""
+    return JSONResponse(camera_discovery.get_environment_info())
 
 @app.post("/api/cameras")
 async def add_camera_api(body: CameraCreate):

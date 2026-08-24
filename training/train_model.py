@@ -119,6 +119,3 @@ print(os.path.join(BASE_DIR, "runs", "ppe_yolo11"))
 
 print("\nBest model:")
 print(os.path.join(BASE_DIR, "runs", "ppe_yolo11", "weights", "best.pt"))
-
-print("\nLast model:")
-print(os.path.join(BASE_DIR, "runs", "ppe_yolo11", "weights", "last.pt"))

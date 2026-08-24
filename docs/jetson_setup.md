@@ -64,3 +64,31 @@ Lock Jetson clocks for maximum throughput:
 sudo nvpmodel -m 0      # Max power mode (MAXN)
 sudo jetson_clocks      # Lock CPU/GPU frequencies
 ```
+
+---
+
+## 📷 Linux & Jetson Camera Verification (Webcam / USB / CSI)
+
+### 1. Check Video Device Nodes
+```bash
+ls -l /dev/video*
+```
+Make sure your user account has access to the video devices:
+```bash
+sudo usermod -aG video $USER
+```
+
+### 2. Verify with `v4l-utils`
+```bash
+sudo apt install -y v4l-utils
+v4l2-ctl --list-devices
+```
+
+### 3. Supported Camera Formats
+- **USB Webcams**: Source index `0`, `1`, or `/dev/video0` (uses V4L2 backend).
+- **Jetson CSI Ribbon Cameras**: GStreamer pipeline string, e.g.:
+  ```
+  nvarguscamerasrc ! video/x-raw(memory:NVMM), width=1280, height=720, format=NV12, framerate=30/1 ! nvvidconv ! video/x-raw, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink
+  ```
+- **RTSP IP Streams**: `rtsp://<ip>:<port>/stream`
+

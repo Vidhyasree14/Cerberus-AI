@@ -44,7 +44,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--half",    action="store_true",     help="Export with FP16 half-precision for Jetson GPU")
     parser.add_argument("--opset",   type=int, default=17,    help="ONNX opset version (default: 17 for TensorRT 8.x/10.x)")
     parser.add_argument("--simplify",action="store_true", default=True, help="Simplify ONNX graph with onnxslim")
-    parser.add_argument("--device",  default="0",             help="Device to use for export (e.g. 0 for Jetson GPU or cpu)")
+    parser.add_argument("--device",  default="cpu",             help="Device to use for export (e.g. 0 for Jetson GPU or cpu)")
     return parser.parse_args()
 
 
